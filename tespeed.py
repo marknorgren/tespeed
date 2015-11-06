@@ -3,7 +3,7 @@
 # Copyright 2012-2013 Janis Jansons (janis.jansons@janhouse.lv)
 #
 
-import argparse
+import argparse, datetime
 args=argparse.Namespace()
 args.suppress=None
 args.store=None
@@ -97,6 +97,13 @@ class TeSpeed:
 
         self.units="Mbit"
         self.unit=0
+
+        # Test Location Information
+        self.ip=-1
+        self.lat=-1
+        self.lon=-1
+        self.isp="n/a"
+
         
         self.chunksize=chunksize
         
@@ -388,6 +395,12 @@ class TeSpeed:
         isp=config.find("client").attrib['isp']
         lat=float(config.find("client").attrib['lat'])
         lon=float(config.find("client").attrib['lon'])
+
+        self.ip = ip
+        self.isp = isp
+        self.lat = lat
+        self.lon = lon
+
         
         print_debug("IP: %s; Lat: %f; Lon: %f; ISP: %s\n" % (ip, lat, lon, isp))
         
@@ -625,7 +638,11 @@ class TeSpeed:
         self.TestDownload()
         self.TestUpload()
 
-        print_result("%0.2f,%0.2f,\"%s\",\"%s\"\n" % (self.down_speed, self.up_speed, self.units, self.servers))
+        #print_result("%0.2f,%0.2f,\"%s\",\"%s\"\n" % (self.down_speed, self.up_speed, self.units, self.servers))
+        testRunTime = datetime.datetime.now().isoformat()
+        print("dateTime, IP, ISP, lat, lon, downSpeed, upSpeed, units, servers")
+        print_result("%s,%s,%s,%f,%f,%0.2f,%0.2f,\"%s\",\"%s\"\n" % (testRunTime, self.ip, self.isp, self.lat, self.lon,self.down_speed, self.up_speed, self.units, self.servers))
+
 
     def ListServers(self, num=0):
         
